@@ -113,11 +113,20 @@ class FootballAudioAnalyzer:
         
         try:
             import subprocess
+            import os
+
+            # ✅ Hardcoded full path to ffmpeg.exe
+            ffmpeg_exe = r"C:\ProgramData\chocolatey\bin\ffmpeg.exe"
+            
+            if not os.path.exists(ffmpeg_exe):
+                raise Exception(f"FFmpeg not found at {ffmpeg_exe}. Please check the path.")
+
             cmd = [
-                'ffmpeg', '-i', video_path, '-vn', '-acodec', 'pcm_s16le',
+                ffmpeg_exe, '-i', video_path, '-vn', '-acodec', 'pcm_s16le',
                 '-ar', str(self.sample_rate), '-ac', '1', '-y', output_path
             ]
             
+            self.logger.info(f"Using FFmpeg: {ffmpeg_exe}")
             result = subprocess.run(cmd, capture_output=True, text=True)
             if result.returncode != 0:
                 raise Exception(f"FFmpeg error: {result.stderr}")
@@ -128,6 +137,7 @@ class FootballAudioAnalyzer:
         except Exception as e:
             self.logger.error(f"Failed to extract audio: {e}")
             raise
+
     
     def load_audio(self, audio_path: str) -> Tuple[np.ndarray, int]:
         """
