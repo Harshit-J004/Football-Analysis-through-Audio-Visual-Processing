@@ -9,7 +9,6 @@ import argparse
 import sys
 from pathlib import Path
 
-# Import our main analyzer
 try:
     from football_sound_detection import FootballAudioAnalyzer
     # Import AudioEvent separately since it's defined in the same module
